@@ -2,7 +2,7 @@
     import 'bootstrap/dist/css/bootstrap.min.css';
     import React from 'react';
     import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-    import TelaPrincipal from './componentes/Telas/TelaCadastro/telaCadastro';
+    import TelaPrincipal from './componentes/Telas/TelaPrincipal/telaPrincipal';
     import TelaLoginADM from './componentes/Telas/TelaLoginADM/telaLoginADM';
     import TelaCadastro from './componentes/Telas/TelaCadastro/telaCadastro';
     

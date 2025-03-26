@@ -1,11 +1,18 @@
-// src/pages/TelaGeral.jsx
+
+
+// src/pages/TelaPrincipal.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function TelaPrincipal() {
-    return (
-        <div>
-            <h1>Tela Principal</h1>
-            <p>Esta é a tela inicial.</p>
-        </div>
-    );
+    const navigate = useNavigate();
+    const irParaCadastro = () => {
+        navigate('/cadastro_funcionarios');
+    }
+  return (
+    <div>
+      <h1>Tela Principal</h1>
+      <button onClick={irParaCadastro}>Ir para Cadastro de Funcionários</button>
+    </div>
+  );
 }
