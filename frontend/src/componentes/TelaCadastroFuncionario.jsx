@@ -1,4 +1,3 @@
-import { Alert } from "react-bootstrap";
 import FormCadFuncionarios from "./Telas/TelaCadastro/FormCadFuncionario";
 import { useEffect, useState } from "react";
 import TabelaFuncionarios from "./Tabelas/TabelaFuncionarios";
@@ -21,8 +20,7 @@ export default function TelaCadastroFuncionario(props) {
             setListaDeFuncionarios(lista);
         });
     },[]); //listaVazia -> didMount
-   
-
+ 
     return (
         <div>
                 <div 
@@ -38,6 +36,7 @@ export default function TelaCadastroFuncionario(props) {
             >
                 <h2>Lista de Funcionarios</h2>
             </div>
+            
                 {
                     exibirTabela ?
                         <TabelaFuncionarios listaDeFuncionarios={listaDeFuncionarios}
