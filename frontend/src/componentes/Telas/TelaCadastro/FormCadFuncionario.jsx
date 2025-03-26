@@ -105,7 +105,7 @@ function manipularSubmissao(evento) {
 
 
 
-import './telaCadastro.css';
+import './FormCadFuncionario.css';
 import { useState, React, useEffect } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { alterarFuncionario, gravarFuncionario } from '../../../servicos/servicoFuncionario';

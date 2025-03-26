@@ -4,7 +4,8 @@
     import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
     import TelaPrincipal from './componentes/Telas/TelaPrincipal/telaPrincipal';
     import TelaLoginADM from './componentes/Telas/TelaLoginADM/telaLoginADM';
-    import TelaCadastro from './componentes/Telas/TelaCadastro/telaCadastro';
+    import TelaCadastro from './componentes/Telas/TelaCadastro/FormCadFuncionario';
+    import TelaTabela from './componentes/TelaCadastroFuncionario';
     
     import './App.css'
 
@@ -15,6 +16,7 @@
                     <Routes>
                         <Route path="/" element={<TelaLoginADM />} />
                         <Route path="/cadastro_funcionarios" element={<TelaCadastro />} />
+                        <Route path="/tabela_funcionarios" element={<TelaTabela />} />
                         <Route path="/principal_funcionarios" element={<TelaPrincipal />} />
                     </Routes>
                 </div>

@@ -1,5 +1,5 @@
 import { Button, Container, Table } from "react-bootstrap";
-import { excluirFuncionario } from "../../../servicos/servicoFuncionario";
+import { excluirFuncionario } from "../../servicos/servicoFuncionario";
 
 export default function TabelaFuncionarios(props) {
     function editarFuncionario(funcionario) {
@@ -28,12 +28,6 @@ export default function TabelaFuncionarios(props) {
     return (
         <>
             <Container>
-                <Button className="mb-3" variant="primary"
-                    onClick={() => {
-                        props.setExibirTabela(false);
-                    }}>
-                    Adicionar
-                </Button>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
