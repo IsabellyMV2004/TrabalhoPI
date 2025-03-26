@@ -1,7 +1,7 @@
-import Fornecedor from "../Modelo/funcionario.js";
+import Funcionario from "../Modelo/funcionario.js";
 import conectar from "./Conexao.js";
 
-export default class FornecedorDAO {
+export default class FuncionarioDAO {
     constructor() {
         this.init();
     }
@@ -10,12 +10,12 @@ export default class FornecedorDAO {
         try {
             const conexao = await conectar(); 
             const sql = `
-                CREATE TABLE IF NOT EXISTS funcionario(
-                    func_codigo INT NOT NULL AUTO_INCREMENT,
+                CREATE TABLE IF NOT EXISTS funcionario (
+                    codigo INT AUTO_INCREMENT PRIMARY KEY,
                     func_nome VARCHAR(50) NOT NULL,
-                    func_cpf VARCHAR(14) NOT NULL,
-                    func_nivel VARCHAR(12) NOT NULL,
-                    CONSTRAINT pk_funcionario PRIMARY KEY(func_codigo)
+                    func_cpf VARCHAR(14) NOT NULL UNIQUE,
+                    func_cargo VARCHAR(30) NOT NULL,
+                    func_nivel VARCHAR(12) NOT NULL
                 )
             `;
             await conexao.execute(sql);
@@ -26,38 +26,38 @@ export default class FornecedorDAO {
     }
 
     async incluir(funcionario) {
-        if (funcionario instanceof Fornecedor)
-            {
-            if (!funcionario.nome || !funcionario.cpf || !funcionario.nivel) 
-                throw new Error("Todos os campos obrigatórios devem ser preenchidos.");
-            
-
-            const conexao = await conectar();
-            const sql = `
-                INSERT INTO funcionario(func_nome, func_cpf, func_nivel)
-                VALUES(?, ?, ?, ?)
-            `;
-            const parametros = [funcionario.nome, funcionario.cpf, funcionario.nivel];
-            const resultado = await conexao.execute(sql, parametros);
-            funcionario.codigo = resultado[0].insertId;
-            await conexao.release();
-        } else
-            throw new Error("O objeto funcionario não é válido.");
-        
-    }
-
-    async alterar(funcionario) {
-        if (funcionario instanceof Fornecedor) {
-            if (!funcionario.nome || !funcionario.cpf || !funcionario.nivel) {
+        if (funcionario instanceof Funcionario) {
+            if (!funcionario.nome || !funcionario.cpf || !funcionario.cargo || !funcionario.nivel) {
                 throw new Error("Todos os campos obrigatórios devem ser preenchidos.");
             }
 
             const conexao = await conectar();
             const sql = `
-                UPDATE funcionario SET func_nome=?, func_cpf=?, func_nivel=?=?
-                WHERE func_codigo = ?
+                INSERT INTO funcionario (func_nome, func_cpf, func_cargo, func_nivel)
+                VALUES (?, ?, ?, ?)
             `;
-            const parametros = [funcionario.nome, funcionario.cpf, funcionario.nivel, funcionario.codigo];
+            const parametros = [funcionario.nome, funcionario.cpf, funcionario.cargo, funcionario.nivel];
+            const [resultado] = await conexao.execute(sql, parametros);
+            await conexao.release();
+
+            return resultado.insertId; // Retorna o código gerado
+        } else {
+            throw new Error("O objeto funcionario não é válido.");
+        }
+    }
+
+    async alterar(funcionario) {
+        if (funcionario instanceof Funcionario) {
+            if (!funcionario.nome || !funcionario.cpf || !funcionario.cargo || !funcionario.nivel) {
+                throw new Error("Todos os campos obrigatórios devem ser preenchidos.");
+            }
+
+            const conexao = await conectar();
+            const sql = `
+                UPDATE funcionario SET func_nome = ?, func_cargo = ?, func_nivel = ?
+                WHERE func_cpf = ?
+            `;
+            const parametros = [funcionario.nome, funcionario.cargo, funcionario.nivel, funcionario.cpf];
             await conexao.execute(sql, parametros);
             await conexao.release();
         } else {
@@ -69,39 +69,40 @@ export default class FornecedorDAO {
         const conexao = await conectar();
         let sql = "";
         let parametros = [];
-        if (isNaN(parseInt(termo))) {
+
+        if (termo.includes(".")) { // CPF contém pontos e traços, então é string
+            sql = `SELECT * FROM funcionario WHERE func_cpf = ?`;
+            parametros = [termo];
+        } else {
             sql = `SELECT * FROM funcionario WHERE func_nome LIKE ?`;
             parametros = ['%' + termo + '%'];
-        } else {
-            sql = `SELECT * FROM funcionario WHERE func_codigo = ?`;
-            parametros = [termo];
         }
 
         const [linhas] = await conexao.execute(sql, parametros);
-        let listaFornecedors = [];
+        let listaFuncionarios = [];
         for (const linha of linhas) {
-            const funcionario = new Fornecedor(
-                linha['func_codigo'],
+            const funcionario = new Funcionario(
+                linha['codigo'], // Adiciona o código do funcionário
                 linha['func_nome'],
                 linha['func_cpf'],
+                linha['func_cargo'],
                 linha['func_nivel']
             );
-            listaFornecedors.push(funcionario);
+            listaFuncionarios.push(funcionario);
         }
         await conexao.release();
-        return listaFornecedors;
+        return listaFuncionarios;
     }
 
     async excluir(funcionario) {
-        if (funcionario instanceof Fornecedor && funcionario.codigo) {
+        if (funcionario instanceof Funcionario && funcionario.cpf) {
             const conexao = await conectar();
-            const sql = `DELETE FROM funcionario WHERE func_codigo = ?`;
-            let parametros = [funcionario.codigo]; // Garantir que o código esteja definido
+            const sql = `DELETE FROM funcionario WHERE func_cpf = ?`;
+            const parametros = [funcionario.cpf]; 
             await conexao.execute(sql, parametros);
-            await conexao.release(); // Libera a conexão
+            await conexao.release();
         } else {
-            console.error('Fornecedor ou código inválido para exclusão:', funcionario);
+            throw new Error('Funcionário ou CPF inválido para exclusão.');
         }
     }
-        
 }

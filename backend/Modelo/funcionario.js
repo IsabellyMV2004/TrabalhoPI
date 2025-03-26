@@ -1,24 +1,31 @@
 import FuncionarioDAO from "../Persistencia/funcionarioDAO.js";
 
 export default class Funcionario {
-    // Atributos privados usando a sintaxe #
+    // Atributos privados
+    #codigo;
     #nome;
     #cpf;
     #nivel;
+    #cargo;
 
     // Construtor da classe
-    constructor(nome="",cpf="",nivel=""){
-            this.#nome=nome;
-            this.#cpf=cpf;
-            this.#nivel=nivel;
+    constructor(codigo = null, nome = "", cpf = "", cargo = "", nivel = "") {
+        this.#codigo = codigo; // Código gerado automaticamente pelo banco
+        this.#nome = nome;
+        this.#cpf = cpf;
+        this.#cargo = cargo;
+        this.#nivel = nivel;
     }
 
-    // Método get para o atributo nome
+    // Métodos GET e SET
+    get codigo() {
+        return this.#codigo;
+    }
+
     get nome() {
         return this.#nome;
     }
 
-    // Método set para o atributo nome
     set nome(value) {
         this.#nome = value;
     }
@@ -27,16 +34,22 @@ export default class Funcionario {
         return this.#cpf;
     }
 
-    // Método set para o atributo cpf
     set cpf(value) {
         this.#cpf = value;
+    }
+
+    get cargo() {
+        return this.#cargo;
+    }
+
+    set cargo(value) {
+        this.#cargo = value;
     }
 
     get nivel() {
         return this.#nivel;
     }
 
-    // Método set para o atributo nivel
     set nivel(value) {
         this.#nivel = value;
     }
@@ -44,28 +57,31 @@ export default class Funcionario {
     // Método toJSON para conversão em JSON
     toJSON() {
         return {
+            "codigo": this.#codigo,
             "nome": this.#nome,
             "cpf": this.#cpf,
+            "cargo": this.#cargo,
             "nivel": this.#nivel
         };
     }
 
-    async incluir(){
+    // Métodos para manipulação no banco de dados
+    async incluir() {
         const funcDAO = new FuncionarioDAO();
-        await funcDAO.incluir(this); 
+        this.#codigo = await funcDAO.incluir(this); // Recebe o código gerado pelo banco
     }
 
-    async consultar(termo){
+    async consultar(termo) {
         const funcDAO = new FuncionarioDAO();
         return await funcDAO.consultar(termo);
     }
 
-    async excluir(){
+    async excluir() {
         const funcDAO = new FuncionarioDAO();
         await funcDAO.excluir(this);
     }
 
-    async alterar(){
+    async alterar() {
         const funcDAO = new FuncionarioDAO();
         await funcDAO.alterar(this);
     }
