@@ -8,7 +8,7 @@ export default class FuncionarioDAO {
         this.init();
     }
 
-    async init() {
+    /*async init() {
         try 
         {
             const conexao = await conectar(); //retorna uma conexão
@@ -29,7 +29,35 @@ export default class FuncionarioDAO {
         catch (e) {
             console.log("Não foi possível iniciar o banco de dados: " + e.message);
         }
-    }
+    }*/
+
+        async init() {
+            try {
+                const conexao = await conectar(); // Retorna uma conexão
+        
+                // Dropar a tabela se já existir
+                const dropTableSQL = `DROP TABLE IF EXISTS funcionario;`;
+                await conexao.execute(dropTableSQL);
+        
+                // Criar a tabela novamente
+                const createTableSQL = `
+                CREATE TABLE funcionario (
+                    func_id INT AUTO_INCREMENT NOT NULL,
+                    func_nome VARCHAR(100) NOT NULL,
+                    func_cpf VARCHAR(14) NOT NULL,
+                    func_cargo VARCHAR(40) NOT NULL,
+                    func_nivel VARCHAR(40) NOT NULL,
+                    CONSTRAINT pk_funcionario PRIMARY KEY(func_id)
+                );
+                `;
+                await conexao.execute(createTableSQL);
+        
+                await conexao.release();
+            } catch (e) {
+                console.log("Não foi possível iniciar o banco de dados: " + e.message);
+            }
+        }
+        
 
     async incluir(funcionario) {
         if (funcionario instanceof Funcionario) {
