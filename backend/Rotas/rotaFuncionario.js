@@ -10,7 +10,7 @@ const rotaFuncionario = Router();
 rotaFuncionario.post("/", funcCtrl.gravar);
 rotaFuncionario.put("/:nome", funcCtrl.editar);
 rotaFuncionario.patch("/:nome", funcCtrl.editar);
-rotaFuncionario.delete("/:nome", funcCtrl.excluir);
+rotaFuncionario.delete("/:cpf", funcCtrl.excluir);
 rotaFuncionario.get("/:nome", funcCtrl.consultar);
 rotaFuncionario.get("/",funcCtrl.consultar);
 

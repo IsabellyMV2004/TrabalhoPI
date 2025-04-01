@@ -2,11 +2,20 @@ import FuncionarioDAO from "../Persistencia/funcionarioDAO.js";
 
 export default class Funcionario{
     //atributos privados
+    #id;
     #nome;
     #cpf;
     #cargo;
     #nivel;
 
+
+    get id(){
+        return this.#id;
+    }
+
+    set id(novoID){
+        this.#id = novoID;
+    }
 
     get nome(){
         return this.#nome;
@@ -41,7 +50,8 @@ export default class Funcionario{
     }
 
     //construtor (criador de um produto)
-    constructor(nome="", cpf="", cargo="", nivel=""){
+    constructor(id = 0, nome="", cpf="", cargo="", nivel=""){
+        this.#id = id;
         this.#nome=nome;
         this.#cpf=cpf;
         this.#cargo = cargo;
@@ -53,6 +63,7 @@ export default class Funcionario{
     //precisar ser convertido no formato JSON
     toJSON(){
         return {
+            "id":this.#id,
             "nome":this.#nome,
             "cpf":this.#cpf,
             "cargo":this.#cargo,

@@ -14,11 +14,13 @@ export default class FuncionarioDAO {
             const conexao = await conectar(); //retorna uma conexão
             const sql = `
             CREATE TABLE IF NOT EXISTS funcionario(
-                func_nome VARCHAR(40) NOT NULL,
+
+                func_id INT AUTO_INCREMENT NOT NULL,
+                func_nome VARCHAR(100) NOT NULL,
                 func_cpf VARCHAR(14) NOT NULL,
                 func_cargo VARCHAR(40) NOT NULL,
                 func_nivel VARCHAR(40) NOT NULL,
-                CONSTRAINT pk_funcionario PRIMARY KEY(func_nome)
+                CONSTRAINT pk_funcionario PRIMARY KEY(func_id)
             );
         `;
             await conexao.execute(sql);
@@ -32,10 +34,11 @@ export default class FuncionarioDAO {
     async incluir(funcionario) {
         if (funcionario instanceof Funcionario) {
             const conexao = await conectar();
-            const sql = `INSERT INTO funcionario(func_nome, func_cpf, func_cargo, func_nivel)
-                VALUES (?, ?, ?, ?)
+            const sql = `INSERT INTO funcionario(func_id, func_nome, func_cpf, func_cargo, func_nivel)
+                VALUES (?, ?, ?, ?, ?)
             `;
             let parametros = [
+                funcionario.id,
                 funcionario.nome,
                 funcionario.cpf,
                 funcionario.cargo,
@@ -49,14 +52,15 @@ export default class FuncionarioDAO {
     async alterar(funcionario) {
         if (funcionario instanceof Funcionario) {
             const conexao = await conectar();
-            const sql = `UPDATE funcionario SET func_cpf =?
-                WHERE  func_nome = ?
+            const sql = `UPDATE funcionario SET func_nome = ?, func_cpf = ?, func_cargo = ?, func_nivel = ?
+                WHERE  func_id = ?
             `;
             let parametros = [
+                funcionario.nome,
                 funcionario.cpf,
                 funcionario.cargo,
                 funcionario.nivel,
-                funcionario.nome
+                funcionario.id
             ]; 
             await conexao.execute(sql, parametros);
             await conexao.release(); //libera a conexão
@@ -75,13 +79,14 @@ export default class FuncionarioDAO {
         }
         else {
             sql = `SELECT * FROM funcionario t
-                   WHERE func_nome = ?`
+                   WHERE func_id = ?`
             parametros = [termo];
         }
         const [linhas, campos] = await conexao.execute(sql, parametros);
         let listaFuncionario = [];
         for (const linha of linhas) {
             const funcionario = new Funcionario(
+                linha['func_id'],
                 linha['func_nome'],
                 linha['func_cpf'],
                 linha['func_cargo'],
@@ -96,9 +101,9 @@ export default class FuncionarioDAO {
     async excluir(funcionario) {
         if (funcionario instanceof Funcionario) {
             const conexao = await conectar();
-            const sql = `DELETE FROM funcionario WHERE func_nome = ?`;
+            const sql = `DELETE FROM funcionario WHERE func_cpf = ?`;
             let parametros = [
-                funcionario.nome
+                funcionario.cpf
             ]; //dados do produto
             await conexao.execute(sql, parametros);
             await conexao.release(); //libera a conexão

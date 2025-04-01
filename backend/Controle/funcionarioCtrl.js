@@ -16,7 +16,7 @@ export default class FuncionarioCtrl {
             if (nome && cpf && cargo && nivel)
             {
                 //gravar a categoria
-                const funcionario = new Funcionario(nome, cpf, cargo, nivel);
+                const funcionario = new Funcionario(0, nome, cpf, cargo, nivel);
                 funcionario.incluir()
                 .then(()=>{
                     resposta.status(200).json({
@@ -60,14 +60,15 @@ export default class FuncionarioCtrl {
         //Verificando se o método da requisição é POST e conteúdo é JSON
         if ((requisicao.method == 'PUT' || requisicao.method == 'PATCH') && requisicao.is("application/json")){
             //o código será extraída da URL (padrão REST)
+            const id = requisicao.body.id;
             const nome  = requisicao.params.nome;
             const cpf = requisicao.body.cpf;
             const cargo = requisicao.body.cargo;
             const nivel = requisicao.body.nivel;
         
-            if (nome && cpf && cargo && nivel)
+            if (id > 0 && nome && cpf && cargo && nivel)
             {
-                const funcionario = new Funcionario(nome, cpf, cargo, nivel);
+                const funcionario = new Funcionario(id, nome, cpf, cargo, nivel);
                 funcionario.alterar().then(()=>{
                     resposta.status(200).json({
                         "status":true,
@@ -107,11 +108,11 @@ export default class FuncionarioCtrl {
         //Verificando se o método da requisição é POST e conteúdo é JSON
         if (requisicao.method == 'DELETE') {
             //o código será extraída da URL (padrão REST)
-            const nome = requisicao.params.nome;
-            //pseudo validação
-            if (nome) {
-                //alterar o produto
-                const funcionario = new Funcionario(nome);
+            const cpf = requisicao.params.cpf;
+            
+            if (cpf) {
+                const funcionario = new Funcionario();
+                funcionario.cpf = cpf;
                 funcionario.excluir()
                     .then(() => {
                         resposta.status(200).json({
