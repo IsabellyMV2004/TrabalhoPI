@@ -40,13 +40,13 @@ export default function RelatorioFuncionarios(){
             }
 
             try {
-                const response = await fetch("http://localhost:3000/funcionarios/" + funcionario.nome, {
+                const response = await fetch("http://localhost:3000/funcionarios/" + funcionario.cpf, {
                     method: "DELETE"
                 });
 
                 if (response.ok) {
                     setMensagem("Funcionario excluida com sucesso!");
-                    setListaDeFuncionarios(listaDeFuncionarios.filter(t => t.id !== funcionario.id));
+                    setListaDeFuncionarios(listaDeFuncionarios.filter(t => t.cpf !== funcionario.cpf));
                 } else {
                     setMensagem("Erro ao excluir a funcionario.");
                 }
@@ -69,8 +69,8 @@ export default function RelatorioFuncionarios(){
 
         try {
             // Verifica se estamos editando ou criando uma nova funcionario
-            const response = funcionario.nome
-                ? await fetch("http://localhost:3000/funcionarios/"+funcionario.nome, {
+            const response = funcionario.id
+                ? await fetch("http://localhost:3000/funcionarios/"+funcionario.id, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(funcionario),
