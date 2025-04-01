@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 export default function FormCadFuncionario() {
+    const [id, setID] = useState("");
     const [nome, setNome] = useState("");
     const [cpf, setCPF] = useState("");
     const [cargo, setCargo] = useState("");
@@ -17,10 +18,12 @@ export default function FormCadFuncionario() {
 
     useEffect(() => {
         if (location.state && location.state.nome && location.state.cpf && location.state.cargo && location.state.nivel) {
+            location.id = 0;
+            setID(location.state.id);
             setNome(location.state.nome);
             setCPF(location.state.cpf);
-            setNome(location.state.cargo);
-            setCPF(location.state.nivel);
+            setCargo(location.state.cargo);
+            setNivel(location.state.nivel);
             setEditando(true);  // Ativa o modo de edição
         }
     }, [location.state]);
@@ -34,7 +37,7 @@ export default function FormCadFuncionario() {
             return;
         }
 
-        const funcionario = { nome, cpf, cargo, nivel }; // Monta o objeto para enviar ao backend
+        const funcionario = { id, nome, cpf, cargo, nivel }; // Monta o objeto para enviar ao backend
         const url = editando ? `http://localhost:3000/funcionarios/${nome}` : "http://localhost:3000/funcionarios";
         const method = editando ? "PUT" : "POST";
 
