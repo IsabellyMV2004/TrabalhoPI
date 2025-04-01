@@ -80,8 +80,8 @@ export default class FuncionarioDAO {
     async alterar(funcionario) {
         if (funcionario instanceof Funcionario) {
             const conexao = await conectar();
-            const sql = `UPDATE funcionario SET func_nome = ?, func_cpf = ?, func_cargo = ?, func_nivel = ?
-                WHERE  func_id = ?
+            const sql = `UPDATE funcionario SET func_nome = ?, func_cargo = ?, func_nivel = ?
+                WHERE  func_cpf = ?
             `;
             let parametros = [
                 funcionario.nome,

@@ -16,8 +16,8 @@ rotaFuncionario.get("/",funcCtrl.consultar);*/
 
 
 rotaFuncionario.post("/", funcCtrl.gravar);
-rotaFuncionario.put("/:id",funcCtrl.editar);
-rotaFuncionario.patch("/:id",funcCtrl.editar);
+rotaFuncionario.put("/:cpf",funcCtrl.editar);
+rotaFuncionario.patch("/:cpf",funcCtrl.editar);
 rotaFuncionario.delete("/:cpf",funcCtrl.excluir);
 rotaFuncionario.get("/:nome?", funcCtrl.consultar); 
 
