@@ -16,6 +16,7 @@ export default function FormCadFuncionario() {
     const [editando, setEditando] = useState(false);
     const [funcionario, setFuncionario] = useState(nome, cpf, cargo, nivel);
 
+
     useEffect(() => {
         if (location.state && location.state.nome && location.state.cpf && location.state.cargo && location.state.nivel) {
             location.id = 0;
@@ -37,8 +38,10 @@ export default function FormCadFuncionario() {
             return;
         }
 
+        
+
         const funcionario = { id, nome, cpf, cargo, nivel }; // Monta o objeto para enviar ao backend
-        const url = editando ? `http://localhost:3000/funcionarios/${nome}` : "http://localhost:3000/funcionarios";
+        const url = editando ? `http://localhost:3000/funcionarios/${cpf}` : "http://localhost:3000/funcionarios";
         const method = editando ? "PUT" : "POST";
 
         try {

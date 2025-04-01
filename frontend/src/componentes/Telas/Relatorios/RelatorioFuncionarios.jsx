@@ -69,8 +69,8 @@ export default function RelatorioFuncionarios(){
 
         try {
             // Verifica se estamos editando ou criando uma nova funcionario
-            const response = funcionario.id
-                ? await fetch("http://localhost:3000/funcionarios/"+funcionario.id, {
+            const response = funcionario.cpf
+                ? await fetch("http://localhost:3000/funcionarios/"+funcionario.cpf, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(funcionario),
@@ -152,7 +152,9 @@ export default function RelatorioFuncionarios(){
                                             <td>{funcionario.cargo}</td>
                                             <td>{funcionario.nivel}</td>
                                             <td>
-                                                <Button 
+                                                <Button onClick={ ()=> {
+                                                    editarFuncionarios();
+                                                }}
                                                     as={Link} 
                                                     to={{
                                                         pathname: "/cadastroFuncionario",
