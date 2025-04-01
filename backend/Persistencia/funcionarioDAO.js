@@ -8,7 +8,7 @@ export default class FuncionarioDAO {
         this.init();
     }
 
-    /*async init() {
+    async init() {
         try 
         {
             const conexao = await conectar(); //retorna uma conexão
@@ -29,9 +29,9 @@ export default class FuncionarioDAO {
         catch (e) {
             console.log("Não foi possível iniciar o banco de dados: " + e.message);
         }
-    }*/
+    }
 
-        async init() {
+     /*   async init() {
             try {
                 const conexao = await conectar(); // Retorna uma conexão
         
@@ -57,7 +57,7 @@ export default class FuncionarioDAO {
                 console.log("Não foi possível iniciar o banco de dados: " + e.message);
             }
         }
-        
+        */
 
     async incluir(funcionario) {
         if (funcionario instanceof Funcionario) {
