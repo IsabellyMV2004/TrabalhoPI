@@ -16,6 +16,7 @@ import RelatorioResponsaveis from './componentes/Telas/Relatorios/RelatorioRespo
 import TelaCadastroResponsavel from './componentes/Telas/TelaCadastroResponsavel';
 import FormCadResponsavel from './componentes/Telas/Formularios/FormCadResponsavel';
 import RelatorioAlunos from './componentes/Telas/Relatorios/RelatorioAlunos';
+import RelatorioFuncionarios from './componentes/Telas/Relatorios/RelatorioFuncionarios';
 
 
 
@@ -29,11 +30,14 @@ function App() {
                     <Route path="/" element={<TelaMenu />} />
                     <Route path="/telaTurma" element={<TelaCadastroTurma />} />
                     <Route path="/cadastroTurma" element={<FormCadTurma />} />
+                    <Route path="/telaFuncionario" element={<TelaCadastroFuncionario />} />
+                    <Route path="/cadastroFuncionario" element={<FormCadFuncionario />} />
                     <Route path="/telaEscola" element={< TelaCadastroEscola/>}/>
                     <Route path="/cadastroEscola" element={<FormCadEscola />} />
                     <Route path="/telaAluno" element={<TelaCadastroAluno />} />
                     <Route path="/cadastroAluno" element={<FormCadAluno />} />
                     <Route path="/relatorioAluno" element={<RelatorioAlunos />} />
+                    <Route path="/relatorioFuncionario" element={<RelatorioFuncionarios />} />
                     <Route path="/relatorioTurma" element={<RelatorioTurmas />} />
                     <Route path="/relatorioEscola" element={<RelatorioEscolas />} />
                     <Route path="/telaResponsavel" element={<TelaCadastroResponsavel />} />
