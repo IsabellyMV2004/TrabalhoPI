@@ -17,7 +17,8 @@ import TelaCadastroResponsavel from './componentes/Telas/TelaCadastroResponsavel
 import FormCadResponsavel from './componentes/Telas/Formularios/FormCadResponsavel';
 import RelatorioAlunos from './componentes/Telas/Relatorios/RelatorioAlunos';
 import RelatorioFuncionarios from './componentes/Telas/Relatorios/RelatorioFuncionarios';
-
+import TelaCadastroFuncionario from './componentes/Telas/TelaCadastroFuncionario';
+import FormCadFuncionario from './componentes/Telas/Formularios/FormCadFuncionario';
 
 
 
