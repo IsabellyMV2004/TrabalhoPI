@@ -122,7 +122,7 @@ export default function FormCadFuncionario() {
                     <Form.Label>Email</Form.Label>
                     <Form.Control
                         type="email"
-                        placeholder="Digite o email"
+                        placeholder="xxxx@gmail.com"
                         value={funcionario.email}
                         onChange={(e) => setEmail(e.target.value)}
                         disabled={editando}

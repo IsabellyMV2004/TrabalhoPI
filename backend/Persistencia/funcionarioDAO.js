@@ -14,7 +14,7 @@ export default class FuncionarioDAO {
             const sql = `
             CREATE TABLE IF NOT EXISTS funcionario(
                 func_nome VARCHAR(50) NOT NULL,
-                func_cpf INTEGER NOT NULL,
+                func_cpf INTEGER NOT NULL UNIQUE,
                 func_cargo VARCHAR(20) NOT NULL,
                 func_nivel VARCHAR(20) NOT NULL,
                 func_email VARCHAR(50) NOT NULL,
