@@ -113,7 +113,7 @@ export default class FuncionarioCtrl {
             //o código será extraída da URL (padrão REST)
             const cpf = requisicao.params.cpf;
             //pseudo validação
-            if (!isNaN(cpf)) {
+            if (cpf) {
                 //alterar o produto
                 const funcionario = new Funcionario("", cpf, "", "", "", "");
                 funcionario.excluir()

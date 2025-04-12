@@ -13,7 +13,7 @@ export default class FuncionarioDAO {
                 const conexao = await conectar();
 
                 await conexao.execute(`
-                    CREATE TABLE funcionario (
+                    CREATE TABLE IF NOT EXISTS funcionario (
                         func_nome VARCHAR(50) NOT NULL,
                         func_cpf VARCHAR(14) NOT NULL UNIQUE,
                         func_cargo VARCHAR(20) NOT NULL,
