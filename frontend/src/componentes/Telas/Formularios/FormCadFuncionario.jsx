@@ -29,12 +29,46 @@ export default function FormCadFuncionario() {
         }
     }, [location.state]);
 
+
+    function validarCPF(cpfNum) {
+        let cpf = cpfNum.toString().padStart(11, '0'); // Garante 11 dígitos com zeros à esquerda
+        if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+    
+        let soma = 0, resto;
+    
+        for (let i = 1; i <= 9; i++) {
+            soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+        }
+    
+        resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        if (resto !== parseInt(cpf.charAt(9))) return false;
+    
+        soma = 0;
+        for (let i = 1; i <= 10; i++) {
+            soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+        }
+    
+        resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        if (resto !== parseInt(cpf.charAt(10))) return false;
+    
+        return true;
+    }
+    
+
     const handleSubmit = async (event) => {
         event.preventDefault(); // Evita recarregar a página
 
         // Verifica se os campos estão preenchidos
         if (!nome || !cpf || !cargo || !nivel || !email || !senha) {
             setMensagem("Preencha todos os campos!");
+            return;
+        }
+
+        if(!validarCPF(cpf)){
+            setMensagem("CPF invalido");
+            setTimeout(() => setMensagem(""), 5000);
             return;
         }
 
