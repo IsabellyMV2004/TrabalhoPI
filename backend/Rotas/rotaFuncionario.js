@@ -2,18 +2,18 @@
 //à requisições GET, POST, PUT, PATCH e DELETE HTTP
 
 import { Router } from "express"; //micro-aplicação HTTP
-import FuncionarioCtrl from "../Controle/funcionarioCtrl.js";
+import TurmaCtrl from "../Controle/turmaCtrl.js";
 
-const funcCtrl = new FuncionarioCtrl();
-const rotaFuncionario = Router();
+const turmCtrl = new TurmaCtrl();
+const rotaTurma = Router();
 
-rotaFuncionario.post("/", funcCtrl.gravar);
-rotaFuncionario.put("/:nome", funcCtrl.editar);
-rotaFuncionario.patch("/:nome", funcCtrl.editar);
-rotaFuncionario.delete("/:nome", funcCtrl.excluir);
-rotaFuncionario.get("/:nome", funcCtrl.consultar);
-rotaFuncionario.get("/",funcCtrl.consultar);
+rotaTurma.post("/", turmCtrl.gravar);
+rotaTurma.put("/:cor", turmCtrl.editar);
+rotaTurma.patch("/:cor", turmCtrl.editar);
+rotaTurma.delete("/:cor", turmCtrl.excluir);
+rotaTurma.get("/:cor", turmCtrl.consultar);
+rotaTurma.get("/",turmCtrl.consultar);
 
-export default rotaFuncionario;
+export default rotaTurma;
 
 

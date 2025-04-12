@@ -1,32 +1,33 @@
 //É a classe responsável por traduzir requisições HTTP e produzir respostas HTTP
-import Funcionario from "../Modelo/funcionario.js";
+import Responsavel from "../Modelo/responsavel.js";
 
-export default class FuncionarioCtrl {
+export default class ResponsavelCtrl {
 
     gravar(requisicao, resposta){
         //preparar o destinatário que a resposta estará no formato JSON
         resposta.type("application/json");
         //Verificando se o método da requisição é POST e conteúdo é JSON
         if (requisicao.method == 'POST' && requisicao.is("application/json")){
-            const cor  = requisicao.body.cor;
-            const periodo = requisicao.body.periodo;
+            const cpf  = requisicao.body.cpf;
+            const nome = requisicao.body.nome;
+            const telefone = requisicao.body.telefone;
             //pseudo validação
-            if (cor && periodo)
+            if (cpf && nome && telefone)
             {
                 //gravar a categoria
-                const funcionario = new Funcionario(cor, periodo);
-                funcionario.incluir()
+                const responsavel = new Responsavel(cpf, nome, telefone);
+                responsavel.incluir()
                 .then(()=>{
                     resposta.status(200).json({
                         "status":true,
-                        "mensagem":"Funcionario adicionada com sucesso!",
-                        "cor": funcionario.cor
+                        "mensagem":"Responsavel adicionado com sucesso!",
+                        "cpf": responsavel.cpf
                     });
                 })
                 .catch((erro)=>{
                     resposta.status(500).json({
                         "status":false,
-                        "mensagem":"Não foi possível incluir a funcionario: " + erro.message
+                        "mensagem":"Não foi possível incluir o responsavel: " + erro.message
                     });
                 });
             }
@@ -35,7 +36,7 @@ export default class FuncionarioCtrl {
                 resposta.status(400).json(
                     {
                         "status":false,
-                        "mensagem":"Informe corretamente todos os dados de uma funcionario conforme documentação da API."
+                        "mensagem":"Informe corretamente todos os dados de uma turma conforme documentação da API."
                     }
                 );
             }
@@ -58,23 +59,24 @@ export default class FuncionarioCtrl {
         //Verificando se o método da requisição é POST e conteúdo é JSON
         if ((requisicao.method == 'PUT' || requisicao.method == 'PATCH') && requisicao.is("application/json")){
             //o código será extraída da URL (padrão REST)
-            const cor  = requisicao.params.cor;
-            const periodo = requisicao.body.periodo;
+            const cpf  = requisicao.params.cpf;
+            const nome = requisicao.body.nome;
+            const telefone = requisicao.body.telefone;
         
-            if (cor && periodo)
+            if (cpf && nome && telefone)
             {
                 //alterar a categoria
-                const funcionario = new Funcionario(cor, periodo);
-                funcionario.alterar().then(()=>{
+                const responsavel = new Responsavel(cpf, nome, telefone);
+                responsavel.alterar().then(()=>{
                     resposta.status(200).json({
                         "status":true,
-                        "mensagem":"Funcionario alterada com sucesso!",
+                        "mensagem":"Responsavel alterado com sucesso!",
                     });
                 })
                 .catch((erro)=>{
                     resposta.status(500).json({
                         "status":false,
-                        "mensagem":"Não foi possível alterar a funcionario: " + erro.message
+                        "mensagem":"Não foi possível alterar o responsavel: " + erro.message
                     });
                 });
             }
@@ -83,7 +85,7 @@ export default class FuncionarioCtrl {
                 resposta.status(400).json(
                     {
                         "status":false,
-                        "mensagem":"Informe corretamente todos os dados de uma funcionario conforme documentação da API."
+                        "mensagem":"Informe corretamente todos os dados de uma turma conforme documentação da API."
                     }
                 );
             }
@@ -104,22 +106,22 @@ export default class FuncionarioCtrl {
         //Verificando se o método da requisição é POST e conteúdo é JSON
         if (requisicao.method == 'DELETE') {
             //o código será extraída da URL (padrão REST)
-            const cor = requisicao.params.cor;
+            const cpf = requisicao.params.cpf;
             //pseudo validação
-            if (cor) {
+            if (cpf) {
                 //alterar o produto
-                const funcionario = new Funcionario(cor);
-                funcionario.excluir()
+                const responsavel = new Responsavel(cpf);
+                responsavel.excluir()
                     .then(() => {
                         resposta.status(200).json({
                             "status": true,
-                            "mensagem": "Funcionario excluído com sucesso!",
+                            "mensagem": "Responsável excluído com sucesso!",
                         });
                     })
                     .catch((erro) => {
                         resposta.status(500).json({
                             "status": false,
-                            "mensagem": "Não foi possível excluir a funcionario: " + erro.message
+                            "mensagem": "Não foi possível excluir o responsavel: " + erro.message
                         });
                     });
             }
@@ -127,7 +129,7 @@ export default class FuncionarioCtrl {
                 resposta.status(400).json(
                     {
                         "status": false,
-                        "mensagem": "Informe um código válido de um produto conforme documentação da API."
+                        "mensagem": "Informe um cpf válido de um responsavel conforme documentação da API."
                     }
                 );
             }
@@ -145,24 +147,24 @@ export default class FuncionarioCtrl {
     consultar(requisicao, resposta) {
         resposta.type("application/json");
         if (requisicao.method == "GET") {
-            let cor = requisicao.params.cor;
+            let cpf = requisicao.params.cpf;
 
             //evitar que código tenha valor undefined
-            if (!cor) {
-                cor = "";
+            if (!cpf) {
+                cpf = "";
             }
 
-            const funcionario = new Funcionario();
+            const responsavel = new Responsavel();
             //método consultar retorna uma lista de produtos
-            funcionario.consultar(cor)
-                .then((listaFuncionario) => {
-                    resposta.status(200).json(listaFuncionario);
+            responsavel.consultar(cpf)
+                .then((listaResponsavel) => {
+                    resposta.status(200).json(listaResponsavel);
                 })
                 .catch((erro) => {
                     resposta.status(500).json(
                         {
                             "status": false,
-                            "mensagem": "Erro ao consultar funcionarios: " + erro.message
+                            "mensagem": "Erro ao consultar responsaveis: " + erro.message
                         }
                     );
                 });
