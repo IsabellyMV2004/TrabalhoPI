@@ -8,13 +8,17 @@ export default class FuncionarioCtrl {
         resposta.type("application/json");
         //Verificando se o método da requisição é POST e conteúdo é JSON
         if (requisicao.method == 'POST' && requisicao.is("application/json")){
-            const cor  = requisicao.body.cor;
-            const periodo = requisicao.body.periodo;
+            const nome  = requisicao.body.nome;
+            const cpf = requisicao.body.cpf;
+            const cargo = requisicao.body.cargo;
+            const nivel = requisicao.body.nivel;
+            const email = requisicao.body.email;
+            const senha = requisicao.body.senha;
             //pseudo validação
-            if (cor && periodo)
+            if (nome && cpf && cargo && nivel && email && senha)
             {
                 //gravar a categoria
-                const funcionario = new Funcionario(cor, periodo);
+                const funcionario = new Funcionario(nome, cpf, cargo, nivel, email, senha);
                 funcionario.incluir()
                 .then(()=>{
                     resposta.status(200).json({
@@ -58,13 +62,16 @@ export default class FuncionarioCtrl {
         //Verificando se o método da requisição é POST e conteúdo é JSON
         if ((requisicao.method == 'PUT' || requisicao.method == 'PATCH') && requisicao.is("application/json")){
             //o código será extraída da URL (padrão REST)
-            const cor  = requisicao.params.cor;
-            const periodo = requisicao.body.periodo;
+            const nome  = requisicao.params.nome;
+            const cpf = requisicao.body.cpf;
+            const cargo = requisicao.body.cargo;
+            const nivel = requisicao.body.nivel;
+            const email = requisicao.body.email;
+            const senha = requisicao.body.senha;
         
-            if (cor && periodo)
+            if (nome && cpf && cargo && nivel && email && senha)
             {
-                //alterar a categoria
-                const funcionario = new Funcionario(cor, periodo);
+                const funcionario = new Funcionario(nome, cpf, cargo, nivel, email, senha);
                 funcionario.alterar().then(()=>{
                     resposta.status(200).json({
                         "status":true,
@@ -104,11 +111,11 @@ export default class FuncionarioCtrl {
         //Verificando se o método da requisição é POST e conteúdo é JSON
         if (requisicao.method == 'DELETE') {
             //o código será extraída da URL (padrão REST)
-            const cor = requisicao.params.cor;
+            const cpf = requisicao.params.cpf;
             //pseudo validação
-            if (cor) {
+            if (cpf) {
                 //alterar o produto
-                const funcionario = new Funcionario(cor);
+                const funcionario = new Funcionario(cpf);
                 funcionario.excluir()
                     .then(() => {
                         resposta.status(200).json({
@@ -145,16 +152,16 @@ export default class FuncionarioCtrl {
     consultar(requisicao, resposta) {
         resposta.type("application/json");
         if (requisicao.method == "GET") {
-            let cor = requisicao.params.cor;
+            let nome = requisicao.params.nome;
 
             //evitar que código tenha valor undefined
-            if (!cor) {
-                cor = "";
+            if (!nome) {
+                nome = "";
             }
 
             const funcionario = new Funcionario();
             //método consultar retorna uma lista de produtos
-            funcionario.consultar(cor)
+            funcionario.consultar(nome)
                 .then((listaFuncionario) => {
                     resposta.status(200).json(listaFuncionario);
                 })
