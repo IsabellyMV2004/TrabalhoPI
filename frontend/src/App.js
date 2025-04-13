@@ -22,6 +22,10 @@ import FormCadFuncionario from './componentes/Telas/Formularios/FormCadFuncionar
 
 
 
+import RelatorioListaEspera from './componentes/Telas/Relatorios/RelatorioListaEspera';
+
+
+
 
 function App() {
     return (
@@ -45,6 +49,8 @@ function App() {
                     <Route path="/cadastroResponsavel" element={<FormCadResponsavel />} />
                     <Route path="/relatorioResponsavel" element={<RelatorioResponsaveis/>}/>
 
+
+                    <Route path="/relatoriListaEspera" element={<RelatorioListaEspera/>}/>
                 </Routes>
             </div>
         </Router>
