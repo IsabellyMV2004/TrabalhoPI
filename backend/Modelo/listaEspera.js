@@ -69,18 +69,23 @@ export default class ListaEspera{
         }
     }
 
-    async incluir(){
-        const listaEspDAO = new ListaEsperaDAO();
-        await listaEspDAO.incluir(this); 
-    }
-
-    async consultar(termo){
-        const listaEspDAO = new ListaEsperaDAO();
-        return await listaEspDAO.consultar(termo);
-    }
-
-    async excluir(){
-        const listaEspDAO = new ListaEsperaDAO();
-        await listaEspDAO.excluir(this);
-    }
+    async incluir(conexao){
+            const listaEspDAO = new ListaEsperaDAO();
+            await listaEspDAO.incluir(this, conexao); //this,conexao
+        }
+    
+        async consultar(termo, conexao){
+            const listaEspDAO = new ListaEsperaDAO();
+            return await listaEspDAO.consultar(termo, conexao);
+        }
+    
+        async excluir(conexao){
+            const listaEspDAO = new ListaEsperaDAO();
+            await listaEspDAO.excluir(this, conexao);
+        }
+    
+        async alterar(conexao){
+            const listaEspDAO = new ListaEsperaDAO();
+            await listaEspDAO.alterar(this, conexao);
+        }
 }

@@ -1,148 +1,88 @@
 //É a classe responsável por traduzir requisições HTTP e produzir respostas HTTP
 import ListaEspera from "../Modelo/listaEspera.js";
 import Aluno from "../Modelo/aluno.js";
+import conectar from "./Conexao.js";
 
 export default class ListaEsperaCtrl {
 
-    /*gravar(requisicao, resposta) {
-        //preparar o destinatário que a resposta estará no formato JSON
+    async gravar(requisicao, resposta) {
+
+        const conexao = await conectar();
+
         resposta.type("application/json");
-        //Verificando se o método da requisição é POST e conteúdo é JSON
-        if (requisicao.method == 'POST' && requisicao.is("application/json")) {
-            const numProtocolo = requisicao.body.numProtocolo;
-            const nome = requisicao.body.nome;
-            const dataInsercao = requisicao.body.dataInsercao;
-            const aluno = requisicao.body.aluno || {};
+    
+        if (requisicao.method === 'POST' && requisicao.is("application/json")) {
+            const numProtocolo = parseInt(requisicao.params.numProtocolo); // Vem da URL
+            const { nome, dataInsercao, aluno } = requisicao.body;
+    
             if (!aluno || !aluno.numProtocolo) {
                 return resposta.status(400).json({
-                    "status": false,
-                    "mensagem": "Aluno não informado ou inválido."
+                    status: false,
+                    mensagem: "Aluno não informado ou inválido."
                 });
             }
-            const alu = new Aluno(aluno.numProtocolo);
-            alu.consultar(aluno.numProtocolo).then((listaAlunos) => {
-                if (listaAlunos.length > 0) {
-                    //pseudo validação
-                    if (numProtocolo > 0 && nome && dataInsercao && aluno.numProtocolo > 0) {
-                        //gravar o listaEspera
-
-                        const listaEspera = new ListaEspera(0,
-                            numProtocolo, nome, dataInsercao, alu);
-
-                        listaEspera.incluir()
-                            .then(() => {
-                                resposta.status(200).json({
-                                    "status": true,
-                                    "mensagem": "ListaEspera adicionado com sucesso!",
-                                    "id": listaEspera.id
-                                });
-                            })
-                            .catch((erro) => {
-                                resposta.status(500).json({
-                                    "status": false,
-                                    "mensagem": "Não foi possível incluir o listaEspera: " + erro.message
-                                });
-                            });
-                    }
-                    else {
-                        resposta.status(400).json(
-                            {
-                                "status": false,
-                                "mensagem": "Informe corretamente todos os dados de um listaEspera conforme documentação da API."
-                            }
-                        );
-                    }
-                }
-                else {
-                    resposta.status(400).json({
-                        "status": false,
-                        "mensagem": "A aluno informada não existe!"
-                    });
-                }
-            }).catch((erro) => {
-                resposta.status(500).json({
-                    "status": false,
-                    "mensagem": "Não foi possível validar a aluno: " + erro.message
+    
+            if (!nome || !dataInsercao || isNaN(numProtocolo) || numProtocolo <= 0) {
+                return resposta.status(400).json({
+                    status: false,
+                    mensagem: "Informe corretamente todos os dados de uma lista de espera conforme documentação da API."
                 });
-            });
-        }
-        else {
-            resposta.status(400).json({
-                "status": false,
-                "mensagem": "Requisição inválida! Consulte a documentação da API."
-            });
-
-        }
-
-    }*/
-
-
-
-        gravar(requisicao, resposta) {
-            resposta.type("application/json");
-        
-            if (requisicao.method === 'POST' && requisicao.is("application/json")) {
-                const numProtocolo = parseInt(requisicao.params.numProtocolo); // Vem da URL
-                const { nome, dataInsercao, aluno } = requisicao.body;
-        
-                if (!aluno || !aluno.numProtocolo) {
-                    return resposta.status(400).json({
-                        status: false,
-                        mensagem: "Aluno não informado ou inválido."
-                    });
-                }
-        
-                if (!nome || !dataInsercao || isNaN(numProtocolo) || numProtocolo <= 0) {
-                    return resposta.status(400).json({
-                        status: false,
-                        mensagem: "Informe corretamente todos os dados de uma lista de espera conforme documentação da API."
-                    });
-                }
-        
-                const alu = new Aluno(aluno.numProtocolo);
-        
-                alu.consultar(aluno.numProtocolo)
-                    .then((listaAlunos) => {
-                        if (listaAlunos.length > 0) {
-                            const listaEspera = new ListaEspera(0, numProtocolo, nome, dataInsercao, alu);
-                            listaEspera.incluir()
-                                .then(() => {
-                                    resposta.status(200).json({
-                                        status: true,
-                                        mensagem: "Lista de espera adicionada com sucesso!",
-                                        id: listaEspera.id
-                                    });
-                                })
-                                .catch((erro) => {
-                                    resposta.status(500).json({
-                                        status: false,
-                                        mensagem: "Não foi possível incluir a lista de espera: " + erro.message
-                                    });
-                                });
-                        } else {
-                            resposta.status(400).json({
-                                status: false,
-                                mensagem: "O aluno informado não existe!"
+            }
+    
+            const alu = new Aluno(aluno.numProtocolo);
+            try{
+                await conexao.query('BEGIN');
+                const listaAlunos = await aluno.consultar(numProtocolo, conexao);
+                if (listaAlunos.length > 0) {
+                    await conexao.query('COMMIT');
+                    const listaEspera = new ListaEspera(0, numProtocolo, nome, dataInsercao, alu);
+                    try{
+                        await conexao.query('BEGIN');
+                            if(listaEspera.incluir(conexao)){
+                            await conexao.query('COMMIT');
+                            //await conexao.release();
+    
+                            resposta.status(200).json({
+                                "status":true,
+                                "mensagem":"Aluno adicionado a Lista de Espera com sucesso!"
                             });
                         }
-                    })
-                    .catch((erro) => {
-                        resposta.status(500).json({
+                        else{
+                            await conexao.query('ROLLBACK');
+                            //await conexao.release();
+                            resposta.status(500).json({
+                                "status":false,
+                                "mensagem":"Não foi possível incluir o funcionario: "
+                            });
+                        }
+                    }
+                    catch (e) {
+                        await conexao.query('ROLLBACK');
+                        throw e
+                    }
+                }else {
+                        resposta.status(400).json({
                             status: false,
-                            mensagem: "Erro ao consultar o aluno: " + erro.message
+                            mensagem: "O aluno informado não existe!"
                         });
-                    });
-        
-            } else {
-                resposta.status(400).json({
-                    status: false,
-                    mensagem: "Requisição inválida! Consulte a documentação da API."
-                });
+                }
+            }catch (e) {
+                await conexao.query('ROLLBACK');
+                throw e
+            }finally {
+                conexao.release();
             }
+    
+        } else {
+            resposta.status(400).json({
+                status: false,
+                mensagem: "Requisição inválida! Consulte a documentação da API."
+            });
         }
-        
+    }
+    
 
-    excluir(requisicao, resposta) {
+    async excluir(requisicao, resposta) {
         //preparar o destinatário que a resposta estará no formato JSON
         resposta.type("application/json");
         //Verificando se o método da requisição é POST e conteúdo é JSON
@@ -153,19 +93,33 @@ export default class ListaEsperaCtrl {
             if (id > 0) {
                 //alterar o listaEspera
                 const listaEspera = new ListaEspera(id);
-                listaEspera.excluir()
-                    .then(() => {
+                try{
+                    await conexao.query('BEGIN');
+                        if(listaEspera.excluir(conexao)){
+                        await conexao.query('COMMIT');
+                        //await conexao.release();
+
                         resposta.status(200).json({
-                            "status": true,
-                            "mensagem": "ListaEspera excluído com sucesso!",
+                            "status":true,
+                            "mensagem":"Aluno excluido da Lista de Espera com sucesso!"
                         });
-                    })
-                    .catch((erro) => {
+                    }
+                    else{
+                        await conexao.query('ROLLBACK');
+                        //await conexao.release();
                         resposta.status(500).json({
-                            "status": false,
-                            "mensagem": "Não foi possível excluir o listaEspera: " + erro.message
+                            "status":false,
+                            "mensagem":"Não foi possível excluir o aluno da lista de espera: "
                         });
-                    });
+                    }
+                }
+                catch (e) {
+                    await conexao.query('ROLLBACK');
+                    throw e
+                }
+                finally {
+                    conexao.release();
+                }
             }
             else {
                 resposta.status(400).json(
@@ -186,7 +140,7 @@ export default class ListaEsperaCtrl {
         }
     }
 
-    consultar(requisicao, resposta) {
+    async consultar(requisicao, resposta) {
             resposta.type("application/json");
             if (requisicao.method == "GET") {
                 let nome = requisicao.params.nome;
@@ -198,18 +152,39 @@ export default class ListaEsperaCtrl {
     
                 const LisaEspera = new ListaEspera();
                 //método consultar retorna uma lista de produtos
-                LisaEspera.consultar(nome)
-                    .then((listaListaEspera) => {
-                        resposta.status(200).json(listaListaEspera);
-                    })
-                    .catch((erro) => {
-                        resposta.status(500).json(
-                            {
-                                "status": false,
-                                "mensagem": "Erro ao consultar LisaEsperas: " + erro.message
-                            }
-                        );
-                    });
+                try{
+                    await conexao.query('BEGIN');
+                    const LisaEspera = await funcionario.consultar(nome, conexao);
+                    if (Array.isArray(LisaEspera)) {
+                        await conexao.query('COMMIT');
+                        resposta.status(200).json(LisaEspera);
+                    } else {
+                        await conexao.query('ROLLBACK');
+                        resposta.status(500).json({ status: false, mensagem: "Formato inesperado na resposta" });
+                    }
+                    
+                   /* if(listaFuncionario){
+                        await conexao.query('COMMIT');
+                        //await conexao.release();
+                            
+                        resposta.status(200).json(listaFuncionario);
+                    }
+                    else{
+                        await conexao.query('ROLLBACK');
+                        //await conexao.release();
+                        resposta.status(500).json({
+                            "status": false,
+                            "mensagem": "Erro ao consultar funcionarios: "
+                        });
+                    }*/
+                }
+                catch (e) {
+                    await conexao.query('ROLLBACK');
+                    throw e
+                }
+                finally {
+                    conexao.release();
+                }
     
             }
             else {

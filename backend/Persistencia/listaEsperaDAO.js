@@ -1,6 +1,6 @@
 //DAO - Data Access Object
 import LisaEspera from "../Modelo/listaEspera.js";
-import conectar from "../Controle/Conexao.js";
+//import conectar from "../Controle/Conexao.js";
 
 export default class LisaEsperaDAO {
 
@@ -31,7 +31,7 @@ export default class LisaEsperaDAO {
             }
         }
         
-    async incluir(conexao, numProtocolo) {
+    async incluir(numProtocolo, conexao) {
         // Buscar o id do aluno correspondente ao protocolo
         const [aluno] = await conexao.execute(`
             SELECT alu_nome FROM aluno WHERE alu_numProtocolo = ?
@@ -53,21 +53,18 @@ export default class LisaEsperaDAO {
         console.log('Registro inserido com sucesso!');
     }
     
-    async excluir(listaEspera) {
+    async excluir(listaEspera, conexao) {
         if (listaEspera instanceof LisaEspera) {
             try {
-                const conexao = await conectar();
                 const sql = `DELETE FROM listaEspera WHERE listaEsp_id = ?`;
                 await conexao.execute(sql, [listaEspera.id]);
-                await conexao.release();
             } catch (e) {
                 throw new Error("Erro ao excluir funcionário: " + e.message);
             }
         }
     }
-        async consultar(termo) {
+        async consultar(termo, conexao) {
             try {
-                const conexao = await conectar();
                 let sql = "";
                 let parametros = [];
         
@@ -85,7 +82,6 @@ export default class LisaEsperaDAO {
                     linha['nome'],
                     linha['dataInsercao']
                 ));
-                await conexao.release();
                 return listaLisaEspera;
             } catch (e) {
                 throw new Error("Erro ao consultar funcionários: " + e.message);
