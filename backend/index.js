@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import conectar from './Persistencia/Conexao.js';
+import conectar from './Controle/Conexao.js';
 import dotenv from 'dotenv';
 import rotaTurma from './Rotas/rotaTurma.js'
 import rotaEscola from './Rotas/rotaEscola.js';

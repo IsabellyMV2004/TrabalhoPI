@@ -1,5 +1,5 @@
 import Escola from "../Modelo/escola.js";
-import conectar from "./Conexao.js";
+import conectar from "../Controle/Conexao.js";
 
 export default class EscolaDAO {
     constructor() {

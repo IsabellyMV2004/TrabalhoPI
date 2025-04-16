@@ -2,7 +2,7 @@
 import Turma from "../Modelo/turma.js";
 //import Aluno from "../Modelo/aluno.js";
 
-import conectar from "./Conexao.js";
+import conectar from "../Controle/Conexao.js";
 export default class TurmaDAO {
     constructor() {
         this.init();
